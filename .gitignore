@@ -1,0 +1,10 @@
+release/
+tests/*
+!tests/*.cs
+**/data/
+*.pdb
+*.exe
+*.dll
+__pycache__/
+.env
+.env.*

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>验收记录 · ZZ游戏管理器</title><style>
+:root{color-scheme:light;--ink:#161616;--accent:#161616;--muted:#707070}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f5f5f5;color:var(--ink);font:15px/1.9 'Microsoft YaHei UI','Microsoft YaHei',system-ui,sans-serif}
+.top{background:#101010;color:#ffffff;padding:23px 6vw;font-size:13px;letter-spacing:3px}.layout{max-width:1240px;margin:auto;display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px;padding:48px 32px 80px}
+nav{position:sticky;top:24px;align-self:start;font-size:12px}nav b{display:block;color:var(--accent);margin-bottom:16px;letter-spacing:2px}nav a{display:block;color:#606060;text-decoration:none;padding:7px 0;line-height:1.5}nav a:hover{color:var(--accent)}
+article{background:#fff;padding:48px 54px;border:1px solid #e4e4e4;border-radius:12px;min-width:0}h1{font-size:30px;line-height:1.5;margin:0 0 16px;letter-spacing:-.5px}h2{font-size:21px;margin:44px 0 16px;padding-top:8px;border-top:1px solid #e7e7e7}h3{font-size:17px;margin-top:30px}p{margin:14px 0}strong{color:#161616}a{color:var(--accent);text-underline-offset:3px}li{margin:7px 0}ul,ol{padding-left:24px}
+.table-wrap{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:13px;line-height:1.75}th{text-align:left;background:#eeeeee;color:#292929}th,td{border:1px solid #dddddd;padding:12px 14px;vertical-align:top}tr:nth-child(even) td{background:#fafafa}code{font:12px/1.7 Consolas,monospace;background:#efefef;padding:3px 5px;border-radius:4px;overflow-wrap:anywhere}pre{padding:22px;background:#101010;color:#eeeeee;border-radius:8px;overflow:auto}pre code{background:none;color:inherit;padding:0;white-space:pre}article>p:first-of-type{color:var(--muted);font-size:12px}footer{font-size:12px;color:var(--muted);margin-top:48px;border-top:1px solid #e4e4e4;padding-top:20px}
+@media(max-width:850px){.layout{display:block;padding:20px 14px}nav{position:static;margin:16px 10px 28px}nav a{display:inline-block;margin-right:16px}article{padding:28px 22px}h1{font-size:25px}}
+@media print{body{background:white;font-size:11pt}.top,nav{display:none}.layout{display:block;padding:0;max-width:none}article{padding:0;border:0}h1{font-size:24pt}h2{font-size:15pt;break-after:avoid}h3{break-after:avoid}tr,pre{break-inside:avoid}a{color:inherit}pre{white-space:pre-wrap;background:#eeeeee;color:#101010}pre code{white-space:pre-wrap}footer{display:none}@page{size:A4;margin:18mm}}
+</style></head>
+<body><div class="top">ZZ / GAME MANAGER　·　LOCAL COLLECTION</div><div class="layout"><nav><b>验收记录</b><a href="#section-1">1. 交付范围</a><a href="#section-2">2. 自动测试</a><a href="#section-3">3. 实际窗口检查</a><a href="#section-4">4. 文档检查</a><a href="#section-5">5. 验证边界</a><a href="#section-6">6. 建议的首次使用验收</a></nav><article><h1 id="section-0">ZZ游戏管理器 · 验收记录</h1>
+<p>版本 1.2 · 2026-11-07</p>
+<p>本轮新增可拖动的界面调色工具：背景、卡片、启动按钮可分别调整，支持实时预览、保存、取消还原与恢复默认。默认背景调深。用户已反馈基础功能验收基本通过。本轮保持游戏库数据格式，单独增加配色设置文件。</p>
+<h2 id="section-1">1. 交付范围</h2>
+<p>交付可运行的 Windows 桌面程序、使用手册、设计文档、验收记录，以及源码和构建/测试脚本。成品包不包含开发测试中的示例游戏记录，首次运行从空库开始。</p>
+<p>主程序已经编译为 <code>ZZGameManager.exe</code>。运行依赖 .NET Framework 4.8 或更高的 4.x 版本；实际验证环境具备 .NET Framework 4.8.1。程序不包含 Windows 运行时、游戏本体和用户封面。</p>
+<h2 id="section-2">2. 自动测试</h2>
+<p>执行命令：<code>./test.ps1</code>。最近完整运行结果为 <strong>81 项检查全部通过</strong>，包含原有 52 项和新增 29 项配色检查。</p>
+<p>测试原始证据：源码工作目录的 <code>tests/runs/20261107-032528-1664972/results.txt</code>。时间戳为 UTC。本测试摘要对应此次执行；此后若重新运行，以新生成的记录为准。</p>
+<div class="table-wrap"><table>
+<tr><th>检查组</th><th>已通过的检查</th></tr>
+<tr><td>建库与身份</td><td>首次空库、同库独占锁、中文路径添加、同路径大小写重复拦截、编辑同一记录</td></tr>
+<tr><td>搜索与顺序</td><td>中文拼音样本排序、关键词两端空格处理、空结果、最近列表排除未启动记录、时间倒序、再次启动置前、最近列表内搜索</td></tr>
+<tr><td>输入与引用</td><td>空名、过长名称、缺失 exe、相对路径、脚本扩展名、封面路径穿越、非法时间格式的拒绝</td></tr>
+<tr><td>封面</td><td>边界内缩放、源图片删除后仍能加载、无效图片拒绝、缺失或损坏封面回退</td></tr>
+<tr><td>实际启动</td><td>启动专用探针 exe，并从探针输出确认工作目录为其所在目录；缺失文件启动失败且不改变时间</td></tr>
+<tr><td>游戏保留</td><td>缺失启动文件的记录仍可查询；移除记录后原 exe 仍存在</td></tr>
+<tr><td>保存与恢复</td><td>上一快照备份、重开持久化、真实临时文件写入故障、保存失败保持已提交内存状态、截断主 JSON 后恢复、损坏原文件保留</td></tr>
+<tr><td>不可恢复情况</td><td>无可用备份时拒绝打开且保留原数据；未知根版本拒绝打开且保留原文件</td></tr>
+<tr><td>实际表单集成</td><td>调用实际编辑窗口提交：添加、名称去空格、默认封面、取消不保存、同 ID 修复路径、封面导入、恢复默认封面</td></tr>
+<tr><td>主界面集成</td><td>卡片生成、目录菜单入口、搜索后无结果状态</td></tr>
+<tr><td>调色功能</td><td>HSV/RGB 转换、黑白文字适配、节点边界、预览事件、HEX 输入、独立设置存取、备份、故障保留、实时修改实际卡片且不重建、取消、保存、恢复默认与重开加载</td></tr>
+</table></div>
+<p>自动测试使用自行编译的 <code>ProbeGame.exe</code>，没有启动用户原有的真实游戏。表单集成检查直接设置实际控件并调用提交逻辑，不等同于在界面上完成每一步鼠标点击。</p>
+<h2 id="section-3">3. 实际窗口检查</h2>
+<p>v1.2 已实际打开调色窗口，拖动色板圆点与色相条圆点，观察 HEX 由 #282828 变为 #4B2A2A，再变为 #2A344B，同时主窗口背景同步变化。实际点击“保存配色”后窗口关闭，数据目录生成对应 theme.json。检查中修复了窗口初始位置可能偏出屏幕的问题。取消还原、默认恢复、重开加载和保存失败由表单/文件集成测试覆盖。</p>
+<p>v1.2 已实际打开隔离示例游戏库，确认标题栏及侧栏显示“ZZ游戏管理器”，主界面、默认封面与导航使用黑白灰配色，游戏启动按钮使用亮绿色和黑色文字。此前“全部游戏”和“最近启动”两页均已观察；本轮灰色背景已通过实际游戏卡片页面观察确认。用户自行导入的封面继续按原图显示，不改变其颜色。</p>
+<p>通过 Windows 桌面工具实际打开已编译程序，观察并检查了：</p>
+<ul>
+<li>首次空库页面、默认山景封面与添加引导。</li>
+<li>三条隔离示例记录的名称顺序与卡片布局。</li>
+<li>“最近启动”切换后仅显示有记录的两条游戏，顺序与预设时间一致。</li>
+<li>添加窗口的文本、路径栏、名称栏、封面预览、保存与取消按钮布局。</li>
+</ul>
+<p>检查中修复了顶部添加按钮及统计文本定位问题，以及侧栏按钮悬停时对比度不足的问题。界面使用新版源码再次构建。</p>
+<p>桌面自动化在弹窗焦点和控件索引上出现不稳定，因此没有把弹窗的完整鼠标输入链列为通过。已用表单集成测试覆盖提交结果。路径文件选择器的“自动填写文件夹名”、封面文件选择器和文件资源管理器实开，仍需在真实使用中补充操作验证；相关实现已进行源码检查。</p>
+<h2 id="section-4">4. 文档检查</h2>
+<p>手册和设计文档均提供 UTF-8 Markdown 源文档及离线 HTML 阅读版。HTML 包含中文标题、目录锚点、表格、代码块、响应式样式与打印样式，不加载外部字体或脚本。</p>
+<p>已检查 Markdown 到 HTML 的正文与文档结构、标题锚点和交付文件。内置浏览器禁止打开本地 <code>file:</code> 地址，因此没有完成 HTML 在浏览器中的视觉预览。HTML 可由用户在本机浏览器打开，或使用随附 Markdown 阅读。没有交付经过排版验收的 PDF 或 Word 文件。</p>
+<h2 id="section-5">5. 验证边界</h2>
+<p>以下事项尚未经过本次实测，不应作为已完成的验证结果：</p>
+<ul>
+<li>用户自己的 RPG Maker 游戏、其运行库、视频/音频资源和其他引擎游戏。</li>
+<li>不同 Windows 版本、无 Framework 环境、非本机硬件、网络盘与移动介质。</li>
+<li>不同屏幕缩放比例、跨显示器动态 DPI、完整键盘和辅助技术体验。</li>
+<li>万级游戏库性能、极端图片压力、异常关机/断电与硬件损坏测试。</li>
+<li>SmartScreen 声誉、商业签名和第三方安全认证。</li>
+</ul>
+<h2 id="section-6">6. 建议的首次使用验收</h2>
+<ol>
+<li>解压成品包，在可写目录运行 <code>ZZGameManager.exe</code>。</li>
+<li>手动添加一个自己熟悉的游戏，不设置封面，确认默认图和自动名称。</li>
+<li>启动游戏，确认正常进入游戏，并确认最近启动顺序。</li>
+<li>打开游戏目录，核对位置。</li>
+<li>更换一张封面，关闭再打开管理器，确认封面与记录保留。</li>
+<li>在不影响游戏或存档的前提下，用一个可移动的测试游戏检查路径修复，再移除记录，确认原游戏文件保留。</li>
+</ol>
+<p>这些步骤用于补充真实游戏兼容性验证，不代表本次已经在用户游戏上执行。</p><footer>ZZ游戏管理器 v1.2 · 本地文档 · 可使用浏览器打印或另存为 PDF</footer></article></div></body></html>

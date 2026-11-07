@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>使用手册 · ZZ游戏管理器</title><style>
+:root{color-scheme:light;--ink:#161616;--accent:#161616;--muted:#707070}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f5f5f5;color:var(--ink);font:15px/1.9 'Microsoft YaHei UI','Microsoft YaHei',system-ui,sans-serif}
+.top{background:#101010;color:#ffffff;padding:23px 6vw;font-size:13px;letter-spacing:3px}.layout{max-width:1240px;margin:auto;display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px;padding:48px 32px 80px}
+nav{position:sticky;top:24px;align-self:start;font-size:12px}nav b{display:block;color:var(--accent);margin-bottom:16px;letter-spacing:2px}nav a{display:block;color:#606060;text-decoration:none;padding:7px 0;line-height:1.5}nav a:hover{color:var(--accent)}
+article{background:#fff;padding:48px 54px;border:1px solid #e4e4e4;border-radius:12px;min-width:0}h1{font-size:30px;line-height:1.5;margin:0 0 16px;letter-spacing:-.5px}h2{font-size:21px;margin:44px 0 16px;padding-top:8px;border-top:1px solid #e7e7e7}h3{font-size:17px;margin-top:30px}p{margin:14px 0}strong{color:#161616}a{color:var(--accent);text-underline-offset:3px}li{margin:7px 0}ul,ol{padding-left:24px}
+.table-wrap{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:13px;line-height:1.75}th{text-align:left;background:#eeeeee;color:#292929}th,td{border:1px solid #dddddd;padding:12px 14px;vertical-align:top}tr:nth-child(even) td{background:#fafafa}code{font:12px/1.7 Consolas,monospace;background:#efefef;padding:3px 5px;border-radius:4px;overflow-wrap:anywhere}pre{padding:22px;background:#101010;color:#eeeeee;border-radius:8px;overflow:auto}pre code{background:none;color:inherit;padding:0;white-space:pre}article>p:first-of-type{color:var(--muted);font-size:12px}footer{font-size:12px;color:var(--muted);margin-top:48px;border-top:1px solid #e4e4e4;padding-top:20px}
+@media(max-width:850px){.layout{display:block;padding:20px 14px}nav{position:static;margin:16px 10px 28px}nav a{display:inline-block;margin-right:16px}article{padding:28px 22px}h1{font-size:25px}}
+@media print{body{background:white;font-size:11pt}.top,nav{display:none}.layout{display:block;padding:0;max-width:none}article{padding:0;border:0}h1{font-size:24pt}h2{font-size:15pt;break-after:avoid}h3{break-after:avoid}tr,pre{break-inside:avoid}a{color:inherit}pre{white-space:pre-wrap;background:#eeeeee;color:#101010}pre code{white-space:pre-wrap}footer{display:none}@page{size:A4;margin:18mm}}
+</style></head>
+<body><div class="top">ZZ / GAME MANAGER　·　LOCAL COLLECTION</div><div class="layout"><nav><b>使用手册</b><a href="#section-1">1. 第一次打开</a><a href="#section-2">2. 添加游戏</a><a href="#section-3">3. 找到想玩的游戏</a><a href="#section-4">4. 启动游戏和打开目录</a><a href="#section-5">5. 更换名称、封面和游戏路径</a><a href="#section-6">6. 从游戏库移除</a><a href="#section-7">7. 数据保存、备份与迁移</a><a href="#section-8">8. 常见问题</a><a href="#section-9">9. 快捷键与版本范围</a><a href="#section-10">10. 自己调整界面颜色</a></nav><article><h1 id="section-0">ZZ游戏管理器 · 使用手册</h1>
+<p>版本 1.2 · 2026-11-07</p>
+<p>让散落在硬盘里的游戏，各归其位。</p>
+<h2 id="section-1">1. 第一次打开</h2>
+<ol>
+<li>把交付的 ZIP 完整解压到一个可写目录，例如 <code>D:\工具\ZZ游戏管理器</code>。</li>
+<li>双击 <code>ZZGameManager.exe</code>。不要直接在压缩包中运行。</li>
+<li>点击右上角“＋ 添加游戏”，开始建立自己的游戏库。</li>
+</ol>
+<p>v1.2 新增“界面调色”，可以拖动节点选择游戏库背景、卡片和启动按钮的颜色。默认背景改为更深的灰色，启动按钮默认亮绿色。已有游戏库的数据格式保持兼容。更新时，先关闭旧版，将原来的完整 <code>data</code> 文件夹复制到新版 <code>ZZGameManager.exe</code> 旁边即可继续使用；不要用空数据目录覆盖已有游戏库。</p>
+<p>软件为 Windows 桌面程序，不需要安装 Python、Node.js 或开发工具。运行需要 .NET Framework 4.8 或更高的 4.x 版本；Windows 11 和较新的 Windows 10 通常已经包含。实际验证环境为本机 Windows 与 .NET Framework 4.8.1。其他电脑首次使用时，请以其运行环境为准。</p>
+<p>程序与文档可以离线使用。软件不会联网搜索封面、自动扫描硬盘或上传你的游戏信息。选择封面指的是导入本地图片。</p>
+<h2 id="section-2">2. 添加游戏</h2>
+<ol>
+<li>点击“＋ 添加游戏”，或按 <code>Ctrl+N</code>。</li>
+<li>点击“选择文件”，找到游戏目录里的 <code>.exe</code> 启动文件。RPG Maker 游戏常见名称为 <code>Game.exe</code>，也可能使用游戏自己的名称；应选择你平时手动运行的那个文件。</li>
+<li>从文件选择器选定启动文件后，如果名称为空，软件会使用它所在文件夹的名称。你也可以填写其他名称，长度为 1–100 个字符。</li>
+<li>可选：点击“选择封面…”，导入 JPG、JPEG、PNG 或 BMP 图片。也可以直接保留默认山景封面。</li>
+<li>点击“保存游戏”。信息立即保存，无需退出软件。</li>
+</ol>
+<p>第一版仅支持 <code>.exe</code>，不支持 <code>.lnk</code> 快捷方式、<code>.bat</code> 脚本、网页入口或启动参数。同一个启动文件不能重复添加；同名但位于不同位置的游戏可以分别添加。路径大小写以及普通的 <code>..</code> 路径段会进行规范化，但通过硬链接或目录联接指向同一文件的不同路径，不会被识别为同一个游戏。</p>
+<p>如果在“最近启动”页添加了还没启动过的游戏，它会先出现在“全部游戏”页。搜索框中的关键词会继续生效；找不到新添加的游戏时，可清空搜索。</p>
+<h2 id="section-3">3. 找到想玩的游戏</h2>
+<div class="table-wrap"><table>
+<tr><th>位置</th><th>展示规则</th></tr>
+<tr><td>全部游戏</td><td>所有手动添加的游戏，按名称升序排列，中文使用 Windows 的 zh-CN 拼音排序规则</td></tr>
+<tr><td>最近启动</td><td>只展示从管理器成功发起过启动的游戏，按最后启动时间从新到旧排列</td></tr>
+<tr><td>搜索框</td><td>在当前页面按名称包含关键词筛选，英文不区分大小写，忽略关键词两端空格</td></tr>
+</table></div>
+<p><code>Ctrl+F</code> 聚焦搜索框。清空搜索可恢复当前页面的全部结果。游戏名称太长时，卡片会省略显示；把鼠标停在名称上，可查看完整名称和启动文件路径。</p>
+<p>搜索不支持拼音缩写、标签或文件夹路径检索。名称排序采用字典式升序，例如数字名称不承诺“2 一定排在 10 前面”；多音字按系统排序规则处理。</p>
+<h2 id="section-4">4. 启动游戏和打开目录</h2>
+<ul>
+<li>点击卡片上的“▶ 启动”，或者双击封面、游戏名称。</li>
+<li>点击卡片的“···”，或右键封面、名称、卡片空白处，打开操作菜单。</li>
+<li>选择“打开所在文件夹”，会在 Windows 文件资源管理器中打开启动文件所在目录。</li>
+</ul>
+<p>启动时，软件将游戏所在目录设为工作目录，以便游戏读取相对路径资源。两秒内对同一个游戏的重复启动会被忽略；之后仍可再次启动，软件不跟踪游戏是否正在运行。</p>
+<p>Windows 成功创建进程后，软件才更新最后启动时间。这个时间表示管理器发起启动成功，不代表游戏一定进入了标题画面。游戏启动后即使立即崩溃，仍然会留有记录。从资源管理器直接启动的游戏不会自动出现在最近启动列表中。软件不会记录游玩时长，也不会在关闭管理器时关闭游戏。</p>
+<p>如果 Windows 取消了启动或无法创建进程，不更新最近启动时间。如果游戏已经启动、但保存启动时间失败，会明确提示“游戏已经启动，但最近启动记录保存失败”。</p>
+<h2 id="section-5">5. 更换名称、封面和游戏路径</h2>
+<ol>
+<li>打开卡片菜单，选择“编辑游戏 / 重新定位”。</li>
+<li>修改名称、选择新的启动文件或更换封面。</li>
+<li>点击“保存游戏”。</li>
+</ol>
+<p>游戏文件丢失或被移动时，卡片会显示“文件缺失 · 请重新定位”。点击卡片上的“重新定位”，为原记录选择新的 <code>.exe</code> 即可；原来的最近启动记录和封面会保留。如果文件是在管理器打开之后被移动的，按 <code>F5</code> 刷新文件状态，或尝试启动后按提示处理。</p>
+<p>选择“使用默认封面”，保存后恢复默认山景。导入的封面会复制到管理器的数据目录，并转为 PNG；图片最长限制为 1024×1536 的边界框，保持原比例。卡片用居中裁剪方式填满封面区域，建议使用主体居中的图片。</p>
+<p>图片文件不超过 20 MB，任一边不超过 12000 像素，总像素不超过 4000 万。原图移动或删除不影响已导入封面。封面缓存丢失或损坏时会显示默认图片，不会删除游戏记录。</p>
+<h2 id="section-6">6. 从游戏库移除</h2>
+<p>打开卡片菜单，选择“从游戏库移除…”，在提示框中确认。</p>
+<p>此操作只移除管理器里的记录，不删除硬盘上的游戏、存档或原始图片。重新添加后，会作为一条新的记录，之前的最近启动时间不会自动恢复。</p>
+<p>程序保留上一次成功保存的游戏库备份；它不是回收站，后续操作会覆盖这一备份。封面缓存不会自动清理，因此频繁更换封面可能使数据目录逐渐增大。</p>
+<h2 id="section-7">7. 数据保存、备份与迁移</h2>
+<p>默认数据位置是 <code>ZZGameManager.exe</code> 旁边的 <code>data</code> 文件夹。点击左下角“打开数据目录”可以找到它。</p>
+<pre><code>ZZ游戏管理器/
+  ZZGameManager.exe
+  使用手册.html
+  设计文档.html
+  验收记录.html
+  data/                         首次运行后自动创建
+    library.json                当前游戏库
+    library.json.bak            上一次成功保存的游戏库
+    theme.json                  保存后的配色设置，首次保存配色时创建
+    theme.json.bak              上一次保存的配色设置
+    session.lock                同一游戏库的独占锁文件
+    covers/                     导入的封面缓存</code></pre>
+<p><strong>备份：</strong> 先关闭管理器，再复制完整的 <code>data</code> 文件夹到其他位置。游戏本体和存档不在管理器备份范围内，需要自行备份。</p>
+<p><strong>升级：</strong> 先备份 <code>data</code>，关闭软件后替换 <code>ZZGameManager.exe</code> 和文档，保留原来的 <code>data</code>。</p>
+<p><strong>迁移：</strong> 关闭软件后，复制整个软件文件夹。如果游戏本体的绝对路径没有变化，可以继续使用；换了电脑或盘符时，使用“重新定位”逐一修复。封面会随软件一起迁移。</p>
+<p>请将软件放在可写目录，不要放在只读介质、压缩包内部或需要管理员权限写入的位置。不要在运行期间手动编辑 <code>library.json</code>。如需删除闲置封面缓存，请保留备份，并了解 JSON 中的引用后再操作；软件没有提供自动清理功能。</p>
+<p>同一游戏库只能打开一个管理器窗口。锁文件在软件关闭后仍然可以存在，这不表示软件仍在运行；是否独占由操作系统的文件锁决定，无需手动删除它。</p>
+<p>高级用法：可通过命令行参数 <code>ZZGameManager.exe --data-dir &quot;D:\我的游戏库数据&quot;</code> 指定另一数据目录。备份时应备份该目录。普通使用无需这个参数。</p>
+<h2 id="section-8">8. 常见问题</h2>
+<div class="table-wrap"><table>
+<tr><th>现象</th><th>处理方式</th></tr>
+<tr><td>无法启动管理器，提示目录不可写</td><td>完整解压到自己能写入的目录，再运行；确认同一游戏库未重复打开</td></tr>
+<tr><td>游戏文件缺失</td><td>编辑记录并重新选择启动文件；外接硬盘上的游戏也要先连接硬盘</td></tr>
+<tr><td>文件存在，但游戏仍然打不开</td><td>用资源管理器直接运行同一个 exe 检查游戏环境、资源和依赖；管理器不包含 RPG Maker 运行库</td></tr>
+<tr><td>添加后没有看到游戏</td><td>切换到“全部游戏”，清空搜索</td></tr>
+<tr><td>提示已从备份恢复</td><td>上一次保存的备份已启用；损坏原文件另存为 <code>.corrupt-时间戳</code>，最近一次修改可能丢失，检查后补回</td></tr>
+<tr><td>当前游戏库和备份都损坏</td><td>软件停止打开该库，不用空游戏库覆盖原数据；保留完整数据目录，从自己的离线备份恢复</td></tr>
+<tr><td>名称很长或封面显示不完整</td><td>名称悬停查看全文；封面采用居中裁剪，可换用主体居中的图片</td></tr>
+</table></div>
+<h2 id="section-9">9. 快捷键与版本范围</h2>
+<div class="table-wrap"><table>
+<tr><th>快捷键</th><th>功能</th></tr>
+<tr><td>Ctrl+N</td><td>添加游戏</td></tr>
+<tr><td>Ctrl+F</td><td>聚焦搜索并选中已有关键词</td></tr>
+<tr><td>F5</td><td>刷新列表与文件存在状态</td></tr>
+<tr><td>Enter（编辑窗口）</td><td>保存游戏</td></tr>
+<tr><td>Esc（编辑窗口）</td><td>取消本次编辑</td></tr>
+</table></div>
+<p>第一版已提供游戏库、最近启动、搜索、封面导入、编辑、路径修复和本地备份。标签、收藏置顶、自动扫描、云同步、游玩时长、启动参数、存档管理、自动升级均不在本版范围内。</p>
+<h2 id="section-10">10. 自己调整界面颜色</h2>
+<ol>
+<li>点击右上角、添加按钮旁边的“界面调色”。</li>
+<li>在“调整位置”中选择“游戏库背景”“游戏卡片”或“启动按钮”。</li>
+<li>拖动大色板上的圆点：向下拖动颜色更深，向左拖动颜色更灰。拖动下方彩虹条的圆点，选择色相。</li>
+<li>主窗口会立即预览。可以拖动调色窗口的标题栏，把它移到方便观察的位置。</li>
+<li>点击“保存配色”记住本次调整，下次打开软件自动使用。</li>
+</ol>
+<p>点击“取消”、按 Esc 或关闭调色窗口，会还原打开前的配色。点击“恢复默认配色”预览深灰背景、深灰卡片和亮绿色启动按钮，仍需保存才会记住；也可以取消这次恢复。</p>
+<p>右侧提供近黑、深灰、灰、浅灰四个预设，也能输入完整的十六进制颜色值，例如 <code>#181818</code>。有效颜色立即预览；颜色值不完整时不会保存。色板和彩虹条聚焦后支持方向键微调，按住 Shift 加大步幅。</p>
+<p>文字根据相应背景自动选择黑色或白色。左侧导航、添加/编辑窗口与导入的游戏封面保持原样。配色单独保存在 <code>data/theme.json</code>，随完整 <code>data</code> 目录备份和迁移。保存失败时窗口会保留，可以重试或取消；配色文件损坏时暂用默认颜色并提示，游戏库记录不受影响。</p>
+<p>运行环境参考：<a href="https://learn.microsoft.com/en-us/dotnet/framework/install/on-windows-10">Microsoft：在 Windows 上安装 .NET Framework</a>。</p><footer>ZZ游戏管理器 v1.2 · 本地文档 · 可使用浏览器打印或另存为 PDF</footer></article></div></body></html>

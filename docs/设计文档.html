@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>设计文档 · ZZ游戏管理器</title><style>
+:root{color-scheme:light;--ink:#161616;--accent:#161616;--muted:#707070}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f5f5f5;color:var(--ink);font:15px/1.9 'Microsoft YaHei UI','Microsoft YaHei',system-ui,sans-serif}
+.top{background:#101010;color:#ffffff;padding:23px 6vw;font-size:13px;letter-spacing:3px}.layout{max-width:1240px;margin:auto;display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px;padding:48px 32px 80px}
+nav{position:sticky;top:24px;align-self:start;font-size:12px}nav b{display:block;color:var(--accent);margin-bottom:16px;letter-spacing:2px}nav a{display:block;color:#606060;text-decoration:none;padding:7px 0;line-height:1.5}nav a:hover{color:var(--accent)}
+article{background:#fff;padding:48px 54px;border:1px solid #e4e4e4;border-radius:12px;min-width:0}h1{font-size:30px;line-height:1.5;margin:0 0 16px;letter-spacing:-.5px}h2{font-size:21px;margin:44px 0 16px;padding-top:8px;border-top:1px solid #e7e7e7}h3{font-size:17px;margin-top:30px}p{margin:14px 0}strong{color:#161616}a{color:var(--accent);text-underline-offset:3px}li{margin:7px 0}ul,ol{padding-left:24px}
+.table-wrap{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:13px;line-height:1.75}th{text-align:left;background:#eeeeee;color:#292929}th,td{border:1px solid #dddddd;padding:12px 14px;vertical-align:top}tr:nth-child(even) td{background:#fafafa}code{font:12px/1.7 Consolas,monospace;background:#efefef;padding:3px 5px;border-radius:4px;overflow-wrap:anywhere}pre{padding:22px;background:#101010;color:#eeeeee;border-radius:8px;overflow:auto}pre code{background:none;color:inherit;padding:0;white-space:pre}article>p:first-of-type{color:var(--muted);font-size:12px}footer{font-size:12px;color:var(--muted);margin-top:48px;border-top:1px solid #e4e4e4;padding-top:20px}
+@media(max-width:850px){.layout{display:block;padding:20px 14px}nav{position:static;margin:16px 10px 28px}nav a{display:inline-block;margin-right:16px}article{padding:28px 22px}h1{font-size:25px}}
+@media print{body{background:white;font-size:11pt}.top,nav{display:none}.layout{display:block;padding:0;max-width:none}article{padding:0;border:0}h1{font-size:24pt}h2{font-size:15pt;break-after:avoid}h3{break-after:avoid}tr,pre{break-inside:avoid}a{color:inherit}pre{white-space:pre-wrap;background:#eeeeee;color:#101010}pre code{white-space:pre-wrap}footer{display:none}@page{size:A4;margin:18mm}}
+</style></head>
+<body><div class="top">ZZ / GAME MANAGER　·　LOCAL COLLECTION</div><div class="layout"><nav><b>设计文档</b><a href="#section-1">1. 问题与目标</a><a href="#section-2">2. 功能与验收规则</a><a href="#section-3">3. 技术方案与取舍</a><a href="#section-4">4. 界面设计</a><a href="#section-5">5. 模块与职责</a><a href="#section-6">6. 数据模型</a><a href="#section-7">7. 关键流程</a><a href="#section-11">8. 保存、备份和故障保护</a><a href="#section-12">9. 边界与资源管理</a><a href="#section-13">10. 测试与复现</a><a href="#section-14">11. 后续迭代</a><a href="#section-17">12. 面试讲解与 AI 协作说明</a></nav><article><h1 id="section-0">ZZ游戏管理器 · 设计文档</h1>
+<p>版本 1.2 · 2026-11-07 · 对应交付源码与可执行程序</p>
+<h2 id="section-1">1. 问题与目标</h2>
+<p>用户的 RPG Maker 等本地游戏散落在 C、D 盘不同目录。依靠文件资源管理器寻找游戏，容易忘记放置位置和最近游玩的内容。管理器提供一个由用户主动维护的入口，将“游戏文件位置”和“库内展示”分开：游戏继续放在原目录，管理器只保存元数据和导入的封面。</p>
+<p>第一版目标是完整打通“添加 → 展示 → 启动 → 更新最近记录 → 重启后保留”流程，并在文件移动、图片损坏、保存失败时给出可处理的结果。它也作为 AI 辅助开发的学习项目，保留源码、构建脚本、测试和本设计说明。</p>
+<h2 id="section-2">2. 功能与验收规则</h2>
+<div class="table-wrap"><table>
+<tr><th>需求</th><th>实现规则</th><th>验收方式</th></tr>
+<tr><td>手动添加</td><td>选择 exe，自动建议文件夹名称，允许修改</td><td>文件路径校验与表单集成测试；实际添加窗口布局检查</td></tr>
+<tr><td>从软件启动</td><td>以 exe 完整路径启动，将其父目录设为工作目录</td><td>实际启动专用探针程序并读取工作目录证明</td></tr>
+<tr><td>打开游戏目录</td><td>通过 Windows Shell 打开 exe 所在目录</td><td>源码检查与菜单集成测试；文件资源管理器实开另列验收范围</td></tr>
+<tr><td>名称排序</td><td>全部游戏使用 zh-CN 名称升序</td><td>中文样本排序测试与实际列表检查</td></tr>
+<tr><td>最近启动</td><td>仅收录管理器启动成功的记录，按 UTC 时间倒序</td><td>时间更新、再次启动、搜索测试与页面检查</td></tr>
+<tr><td>自选封面</td><td>导入本地图片，复制并标准化为 PNG</td><td>源图删除后的加载、尺寸限制与损坏图片测试</td></tr>
+<tr><td>默认封面</td><td>使用代码绘制山景，无外部图片依赖</td><td>首次打开与卡片渲染检查</td></tr>
+<tr><td>搜索</td><td>当前页按名称包含筛选，英文忽略大小写</td><td>搜索测试与页面检查</td></tr>
+<tr><td>编辑与移除</td><td>修改同一 ID 的记录；移除仅修改元数据</td><td>持久化与游戏文件保留测试</td></tr>
+<tr><td>路径修复</td><td>文件缺失记录仍展示，可更新 exe 路径</td><td>缺失启动、缺失记录保留、编辑路径测试</td></tr>
+<tr><td>数据持久化</td><td>JSON + 原子替换 + 上一次快照备份</td><td>重开、真实写入故障和损坏恢复测试</td></tr>
+</table></div>
+<p>具体执行结果与没有覆盖的范围以随附《验收记录》为准，表中验收方式不等同于所有路径均已人工完成。</p>
+<h2 id="section-3">3. 技术方案与取舍</h2>
+<p>采用 C#、Windows Forms、.NET Framework 4.x 桌面运行时与系统标准库。交付目标运行环境为 .NET Framework 4.8 或更高的 4.x 版本，实际在 4.8.1 环境验证。源码保持 C# 5 语法兼容，使用 Windows Framework 自带 <code>csc.exe</code> 构建。无需 NuGet、npm、Python 或前端打包环境来构建主程序，也不需要这些环境来运行成品。</p>
+<p>选用这一方案是为了把第一版集中在 Windows 本地文件与进程操作，得到体积小、无安装步骤的成品。默认封面由 GDI+ 绘制，图标随 exe 编译，不需要网络资源。JSON 适合个人游戏库的小规模记录，也便于检查与备份。</p>
+<p>取舍包括：仅面向 Windows；界面由 Windows Forms 和自绘控件组成；大型游戏库的卡片没有虚拟化；不实现现代 .NET 的跨平台能力。后续若游戏数量或产品规模增长，可评估迁移到受支持的现代 .NET 桌面技术、异步缩略图加载和数据库。该迁移不是本版已经完成的内容。</p>
+<p>运行时依赖参考：<a href="https://learn.microsoft.com/en-us/dotnet/framework/install/on-windows-10">Microsoft .NET Framework 安装说明</a>。</p>
+<h2 id="section-4">4. 界面设计</h2>
+<p>界面左侧使用黑色侧栏与黑白导航；右侧默认深灰背景（#282828）、深灰卡片（#363636），启动按钮默认亮绿色（#A6FF00）。v1.2 增加“界面调色”，通过拖动 HSV 色板与色相条节点调整背景、卡片与启动按钮，支持 HEX 输入、预设、实时预览、取消还原与恢复默认。文字根据各自背景的相对亮度，选择黑色、白色中对比度更高的一种。添加/编辑弹窗和用户导入的封面沿用原样式。默认封面由代码绘制，没有使用第三方游戏素材。</p>
+<p>左侧是“全部游戏”“最近启动”，底部提供数据目录和手册入口。主区域依次为页面标题、添加按钮、名称搜索、排序提示、封面卡片和操作状态。卡片展示名称、上次启动时间、文件状态、启动按钮与操作菜单。</p>
+<p>页面无记录时，显示添加引导；最近启动为空时，引导返回全部游戏；搜索无结果时，提供清空搜索。缺失文件的卡片显示修复入口。名称使用省略号处理溢出，悬停可查看全文和完整路径。</p>
+<p>窗口可调整大小，列表自动换行与滚动。使用系统 DPI 感知与 DPI 缩放；跨显示器动态 DPI 切换、多种缩放比例尚未形成完整测试矩阵。</p>
+<h2 id="section-5">5. 模块与职责</h2>
+<pre><code>Program.Main
+  ├─ 解析可选数据目录参数
+  ├─ LibraryStore：独占打开 → 读取 / 恢复
+  └─ MainForm：显示与用户交互
+       ├─ EditForm：编辑草稿 → 校验 → 导入封面 → Upsert
+       ├─ LibraryStore.Query：筛选与排序
+       ├─ GameLauncher：Windows 进程 / 目录启动
+       └─ LibraryStore.MarkLaunched / Remove：保存新快照
+
+Theme / CoverView
+  ├─ 配色、字体与按钮
+  ├─ 封面导入、缩放、无锁加载
+  └─ 默认山景绘制</code></pre>
+<div class="table-wrap"><table>
+<tr><th>文件</th><th>职责</th></tr>
+<tr><td>src/Program.cs</td><td>程序入口、异常提示、生命周期与参数解析</td></tr>
+<tr><td>src/Core.cs</td><td>数据模型、JSON 存储、恢复、校验、查询与启动服务</td></tr>
+<tr><td>src/MainForm.cs</td><td>主界面、卡片、导航、搜索防抖、菜单与启动记录协调</td></tr>
+<tr><td>src/EditForm.cs</td><td>编辑副本、exe 选择、名称与封面交互、提交与取消</td></tr>
+<tr><td>src/Theme.cs</td><td>视觉样式、封面导入和绘制、图片资源释放</td></tr>
+<tr><td>src/PaletteSettings.cs</td><td>配色模型、独立 JSON 持久化、HSV/RGB 转换与文字对比度选择</td></tr>
+<tr><td>src/PaletteForm.cs</td><td>可拖动色板、色相条、HEX 输入、预设、保存和取消</td></tr>
+<tr><td>src/app.manifest</td><td>普通用户权限、Windows 兼容性与 DPI 声明</td></tr>
+<tr><td>build.ps1 / test.ps1</td><td>构建成品 / 构建并运行自动测试</td></tr>
+<tr><td>tools/</td><td>图标与 HTML 文档的可选生成脚本；生成资源已入交付源码</td></tr>
+</table></div>
+<p>MainForm 持有由 Program 创建的存储实例。编辑使用 Game 的副本；点击取消不会改动已提交记录。存储保存成功后才替换内存中的已提交快照。该项目保持小型分层，没有引入依赖注入框架或完整 MVVM。</p>
+<h2 id="section-6">6. 数据模型</h2>
+<p>根对象包含 <code>Version = 1</code> 和 <code>Games</code> 数组。单条游戏记录为：</p>
+<div class="table-wrap"><table>
+<tr><th>字段</th><th>类型 / 语义</th></tr>
+<tr><td>Id</td><td>GUID 的 N 格式字符串，记录的稳定身份，与名称和位置解耦</td></tr>
+<tr><td>Name</td><td>1–100 字符的展示名，提交时去除两端空格</td></tr>
+<tr><td>ExecutablePath</td><td>规范化的 exe 绝对路径；移动游戏后需要手动修复</td></tr>
+<tr><td>CoverFile</td><td>可空，受限为 GUID.png 的缓存文件名，解释为 covers 下的相对文件名</td></tr>
+<tr><td>LastLaunchedUtc</td><td>可空，ISO 8601 的 round-trip 格式 UTC 字符串</td></tr>
+</table></div>
+<p>序列化使用 <code>DataContractJsonSerializer</code>，JSON 属性顺序不作为契约。封面引用只接受受限文件名，拒绝路径穿越。加载会检查版本、ID、重复路径、名称、时间等，允许启动文件已不存在，以便保留修复入口。</p>
+<p>默认数据与 exe 同目录，形成可复制的软件文件夹。程序支持 <code>--data-dir</code>，用于独立库或隔离测试。软件本体迁移不修改游戏路径，跨电脑迁移不承诺游戏路径仍然有效。</p>
+<h2 id="section-7">7. 关键流程</h2>
+<h3 id="section-8">7.1 添加与编辑</h3>
+<p>文件选择器选中 exe → 若名称为空，建议父文件夹名 → 使用编辑副本预览封面 → 保存时规范化路径并校验文件存在 → 检查重复记录 → 按需导入 PNG → Upsert 构建新快照 → 原子保存 → 刷新主界面。</p>
+<p>封面先生成独立文件，再提交引用。提交失败时尝试清除本次新建的封面，旧记录保持。断电发生在图片生成后、JSON 提交前，最多留下未引用封面，不应产生指向未写入图片的新记录。旧封面与已移除记录的封面暂不自动回收，换取保守的数据处理。</p>
+<h3 id="section-9">7.2 启动与最近记录</h3>
+<p>检查同一游戏两秒防重复窗口 → 检查 exe → <code>Process.Start</code>，<code>FileName</code> 为完整 exe 路径、<code>WorkingDirectory</code> 为其父目录、<code>UseShellExecute = true</code> → 成功获得进程 → 写入当前 UTC 启动时间 → 保存 → 刷新。</p>
+<p><code>Process.Start</code> 抛异常或不返回进程时不写时间。启动成功但保存失败是两个不同结果，界面分别提示；不能把“历史保存失败”误报为“游戏未启动”。释放 Process 包装对象不会终止游戏进程。</p>
+<p>软件不轮询游戏存活、不等待标题画面，也不推断游玩时长。外部启动不会写入本软件最近列表。工作目录语义参考：<a href="https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.processstartinfo.workingdirectory">Microsoft ProcessStartInfo.WorkingDirectory</a>。</p>
+<h3 id="section-10">7.3 搜索和排序</h3>
+<p>搜索框使用 180 ms 的 Windows Forms Timer 防抖，减少每个按键触发的卡片重建。过滤规则为名称包含、OrdinalIgnoreCase。全部游戏按 zh-CN CompareInfo 的 IgnoreCase 比较，中文采用系统拼音规则；最近启动先去除无时间记录，再按时间倒序，时间相同以名称和 ID 确定顺序。</p>
+<p>查询为 O(n) 过滤 + O(k log k) 排序；刷新会创建 k 张卡片并加载封面，未虚拟化，未提供万级游戏性能承诺。最近启动时间以 UTC 储存、按本地时区显示，排序不依赖格式化后的显示文本。</p>
+<h2 id="section-11">8. 保存、备份和故障保护</h2>
+<p>启动时独占打开 <code>session.lock</code>，利用 <code>FileShare.None</code> 拒绝同一数据目录的第二个实例。不同数据目录可以同时打开。锁文件无需删除，文件句柄释放即解除独占。</p>
+<p>保存先校验候选快照，将它序列化到 <code>library.json.tmp</code>，执行 <code>Flush(true)</code>，然后：已有库使用 <code>File.Replace</code> 替换主文件并生成 <code>library.json.bak</code>；首次保存使用 <code>File.Move</code>。只有文件提交成功，才发布新的内存快照。任何写入失败都反馈给用户。临时文件尝试在 finally 中清理。</p>
+<p>启动时优先读取主文件。如果主文件不可读，则尝试上一次备份；备份有效时，将损坏主文件另存为 <code>.corrupt-时间戳</code>，复制备份为主文件并提示恢复。主文件与备份均不可用时停止打开，不用空库覆盖原记录。明确不支持的根版本拒绝打开，不回退为旧版本备份。</p>
+<p>备份只保留上一次保存的快照，可能比主文件少一次修改；不是多版本历史，也不替代用户备份。原子替换和刷新降低写坏窗口，不能保证在任何硬件故障、文件系统故障或人为删除下都不丢数据。网络盘和只读介质不属于已验证部署环境。</p>
+<h2 id="section-12">9. 边界与资源管理</h2>
+<ul>
+<li>不自动扫描盘符，用户只授予并选择需要管理的 exe 和图片。</li>
+<li>启动路径与工作目录分别传递，不拼接 shell 命令，不接受脚本或任意启动参数。</li>
+<li>导入图片限制文件大小与尺寸，统一缩放。GDI+ 需要先识别图片再读取尺寸，因此并非不可信图片解码的安全沙箱；只应导入可信本地图片。</li>
+<li>图片加载后复制为独立 Bitmap，再关闭原文件流，不长期锁住原始图片。</li>
+<li>卡片刷新和窗口关闭会释放封面、菜单、工具提示与计时器。</li>
+<li>移除不删除原游戏和存档。封面目录也不做隐式批量清理。</li>
+<li>以普通用户身份运行，不申请管理员权限；未加入自动更新、遥测、网络请求或第三方账户。</li>
+<li>当前 exe 没有商业代码签名；不声称已经取得 SmartScreen 声誉或通过第三方安全认证。</li>
+</ul>
+<h2 id="section-13">10. 测试与复现</h2>
+<p>在源码根目录运行 <code>./build.ps1</code> 构建，运行 <code>./test.ps1</code> 执行测试。脚本使用 Windows 自带 .NET Framework 编译器，测试不安装依赖，不遍历真实游戏目录。若本机策略限制 PowerShell 脚本，请在现有开发环境内按组织允许的方式执行，不需要为软件运行修改系统策略。</p>
+<p>每次测试创建独立 <code>tests/runs/时间戳</code>，保留结果与专用探针 exe。探针在实际被启动时写出 <code>Environment.CurrentDirectory</code>，用以证明进程启动和工作目录，而非只比较启动参数。故障测试通过占用临时文件路径强制写入失败，通过截断 JSON 检查恢复。</p>
+<p>表单集成测试直接使用实际控件和提交方法，覆盖添加、编辑、默认封面、封面提交与路径修复；它不等同于完整鼠标操作。UI 由 Windows 桌面工具另行观察渲染。真实 RPG Maker 项目、运行库、不同 Windows 版本与显示比例仍需要用户实际游戏样本补充验证。</p>
+<h2 id="section-14">11. 后续迭代</h2>
+<h3 id="section-15">v1.2 已实现：用户配色</h3>
+<p>配色独立保存为 <code>theme.json</code>：<code>Version = 1</code>、<code>Background</code>、<code>Card</code>、<code>Launch</code>，颜色必须为不透明的 <code>#RRGGBB</code>。没有文件时使用默认深灰；文件损坏时保留原文件并暂用默认色，不影响游戏库。保存通过临时文件、刷新与原子替换，保留上一版 <code>.bak</code>；加载异常时不自动启用配色备份。</p>
+<p>PaletteForm 保留打开前的副本和编辑草稿。预览事件只更新内存主题；保存成功才提交设置，取消或关闭则还原打开前的副本。MainForm 通过控件职责标记更新颜色，不在每次拖动时重建卡片或重载封面。Theme 为进程内共享状态，适用于单主窗口应用；不同数据目录的独立进程互不影响。</p>
+<p>ColorSurface 在鼠标按下时捕获鼠标，移动时将位置限制在有效范围，抬起或丢失捕获时停止拖动。色板横向为饱和度、纵向为明度；彩虹条控制色相，也支持方向键。渐变由 GDI+ 绘制。调色窗口显示后根据主窗口与工作区计算位置，避免初始位置偏出屏幕。</p>
+<h3 id="section-16">后续能力</h3>
+<p>可按使用反馈增加标签、收藏、批量路径修复、带预览的库导出与恢复。游玩时长需要处理启动器与子进程生命周期；自动扫描需要处理误识别与用户选择；存档管理需要引擎差异识别与恢复保障。上述能力均未在本版实现。</p>
+<h2 id="section-17">12. 面试讲解与 AI 协作说明</h2>
+<p>本版由 AI 根据用户需求辅助生成实现、测试和文档。需求取舍来自使用场景；不能把 AI 已生成的代码等同于用户已独立掌握或在真实游戏中全面验证。</p>
+<p>建议沿一条真实调用链讲解：点击启动 → MainForm.Launch → GameLauncher.Start → 进程启动成功 → LibraryStore.MarkLaunched → 原子保存 → Query 排序与界面更新。再解释一个失败场景：进程启动成功但磁盘写入失败时，为什么不能报告“游戏未启动”。</p>
+<p>可准备的讨论点包括：用 GUID 维持编辑前后的身份；封面相对路径与 exe 绝对路径的不同目的；UTC 存储与本地显示；编辑副本为何避免取消污染；原子替换与备份各自解决什么问题；如何用真实子进程测试工作目录；当前同步渲染的性能限制。后续亲自修改一个小功能并完成验证，会比背诵技术名词更有说服力。</p><footer>ZZ游戏管理器 v1.2 · 本地文档 · 可使用浏览器打印或另存为 PDF</footer></article></div></body></html>
